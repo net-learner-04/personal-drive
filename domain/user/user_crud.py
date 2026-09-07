@@ -169,3 +169,64 @@ def activate_dormant(db: Session, user: Users):
     user.is_dormant = False
     user.last_login = datetime.now()
     db.commit()
+
+
+def get_user_by_email(db: Session, email: str):
+    return db.query(Users).filter(Users.email == email).first()
+
+
+def check_login_by_email(db: Session, email: str, password: str):
+    user = get_user_by_email(db, email)
+    if not user:
+        return None, "No account found with this email.", None
+    if user.is_dormant:
+        return None, "dormant", user
+    if user.locked_until and datetime.now() < user.locked_until:
+        remaining = int((user.locked_until - datetime.now()).total_seconds() / 60) + 1
+        return None, f"Account locked. Try again in {remaining} minute(s).", None
+    if not passwd_context.verify(password, user.passwd):
+        user.failed_login = (user.failed_login or 0) + 1
+        if user.failed_login >= MAX_FAILED_LOGIN:
+            user.locked_until = datetime.now() + timedelta(minutes=LOCKOUT_MINUTES)
+            user.failed_login = 0
+            db.commit()
+            return None, f"Too many failed attempts. Account locked for {LOCKOUT_MINUTES} minutes.", None
+        db.commit()
+        remaining_attempts = MAX_FAILED_LOGIN - user.failed_login
+        return None, f"Incorrect password. {remaining_attempts} attempt(s) remaining.", None
+    user.failed_login = 0
+    user.locked_until = None
+    user.last_login = datetime.now()
+    db.commit()
+    return user, None, None
+
+
+def get_storage_used(db: Session, user_id: int):
+    from models import Files
+    files = db.query(Files).filter(
+        Files.file_owner == user_id,
+        Files.is_deleted == False,
+        Files.is_folder == False
+    ).all()
+    return sum(f.file_size or 0 for f in files)
+
+
+def set_storage_limit(db: Session, user: Users, limit_bytes):
+    user.storage_limit = limit_bytes
+    db.commit()
+
+
+def clean_old_trash(db: Session):
+    from models import Files
+    threshold = datetime.now() - timedelta(days=30)
+    old = db.query(Files).filter(
+        Files.is_deleted == True,
+        Files.deleted_at != None,
+        Files.deleted_at < threshold,
+        Files.is_folder == False
+    ).all()
+    for f in old:
+        if f.file_path and os.path.exists(f.file_path):
+            os.remove(f.file_path)
+        db.delete(f)
+    db.commit()
