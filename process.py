@@ -14,6 +14,7 @@ import uuid
 import mimetypes
 from dotenv import load_dotenv
 from typing import Optional
+from user_crud import get_storage_used
 
 load_dotenv()
 
@@ -354,3 +355,74 @@ def download_shared_file(token: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found.")
 
     return FileResponse(path=file.file_path, filename=file.file_name)
+
+
+@router.delete("/delete/{file_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_file(file_id: int, db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
+    file = _get_owned_file(db, file_id, current_user)
+    file.is_deleted = True
+    file.deleted_at = datetime.now()
+    db.commit()
+
+
+@router.get("/trash")
+def get_trash(db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
+    return db.query(Files).filter(Files.file_owner == current_user.id, Files.is_deleted == True).all()
+
+
+@router.patch("/trash/restore/{file_id}")
+def restore_file(file_id: int, db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
+    file = db.query(Files).filter(Files.id == file_id, Files.file_owner == current_user.id, Files.is_deleted == True).first()
+    if not file:
+        raise HTTPException(status_code=404, detail="File not found in trash.")
+    file.is_deleted = False
+    file.deleted_at = None
+    db.commit()
+    return {"message": "Restored."}
+
+
+@router.delete("/trash/permanent/{file_id}", status_code=status.HTTP_204_NO_CONTENT)
+def permanent_delete(file_id: int, db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
+    file = db.query(Files).filter(Files.id == file_id, Files.file_owner == current_user.id, Files.is_deleted == True).first()
+    if not file:
+        raise HTTPException(status_code=404, detail="File not found in trash.")
+    if file.file_path and os.path.exists(file.file_path):
+        os.remove(file.file_path)
+    db.delete(file)
+    db.commit()
+
+
+@router.delete("/trash/empty", status_code=status.HTTP_204_NO_CONTENT)
+def empty_trash(db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
+    files = db.query(Files).filter(Files.file_owner == current_user.id, Files.is_deleted == True, Files.is_folder == False).all()
+    for f in files:
+        if f.file_path and os.path.exists(f.file_path):
+            os.remove(f.file_path)
+        db.delete(f)
+    db.commit()
+
+
+@router.patch("/star/{file_id}")
+def toggle_star(file_id: int, db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
+    file = _get_owned_file(db, file_id, current_user)
+    file.is_starred = not file.is_starred
+    db.commit()
+    return {"is_starred": file.is_starred}
+
+
+@router.get("/starred")
+def get_starred(db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
+    return db.query(Files).filter(Files.file_owner == current_user.id, Files.is_starred == True, Files.is_deleted == False).all()
+
+
+@router.get("/stats")
+def get_stats(db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
+    files = db.query(Files).filter(Files.file_owner == current_user.id, Files.is_deleted == False, Files.is_folder == False).all()
+    total_size = sum(f.file_size or 0 for f in files)
+    trash_count = db.query(Files).filter(Files.file_owner == current_user.id, Files.is_deleted == True).count()
+    return {
+        "total_files": len(files),
+        "total_size": total_size,
+        "storage_limit": current_user.storage_limit,
+        "trash_count": trash_count
+    }
