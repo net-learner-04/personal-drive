@@ -11,6 +11,7 @@ class Users(Base):
     passwd = Column(String, nullable=False)
     email = Column(String, unique=True)
     storage_path = Column(String, nullable=True)
+    storage_limit = Column(BigInteger, nullable=True)
     is_admin = Column(Boolean, default=False, nullable=False)
     failed_login = Column(Integer, default=0, nullable=False)
     locked_until = Column(DateTime, nullable=True)
@@ -32,6 +33,8 @@ class Files(Base):
     is_folder = Column(Boolean, default=False, nullable=False)
     parent_id = Column(Integer, ForeignKey("files.id"), nullable=True)
     create_date = Column(DateTime, nullable=False, default=datetime.now)
+    is_starred = Column(Boolean, default=False, nullable=False)
+    deleted_at = Column(DateTime, nullable=True)
 
 
 class SharedLinks(Base):
