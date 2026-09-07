@@ -54,7 +54,7 @@ def user_create(_user_create: user_schema.UserCreate, db: Session = Depends(get_
 
 @router.post("/login", response_model=user_schema.Token)
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    user, error, dormant_user = user_crud.check_login(db, form_data.username, form_data.password)
+    user, error, dormant_user = user_crud.check_login_by_email(db, form_data.username, form_data.password)
     if dormant_user:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="dormant")
     if not user:
@@ -277,3 +277,18 @@ def delete_profile_image(
     if current_user.profile_image and os.path.exists(current_user.profile_image):
         os.remove(current_user.profile_image)
     user_crud.update_profile_image(db, current_user, None)
+
+
+@router.patch("/admin/users/{user_id}/storage-limit")
+def admin_set_storage_limit(
+    user_id: int,
+    limit_gb: float = None,
+    db: Session = Depends(get_db),
+    current_user: Users = Depends(require_admin)
+):
+    user = user_crud.get_user_by_id(db, user_id)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found.")
+    limit_bytes = int(limit_gb * 1073741824) if limit_gb is not None else None
+    user_crud.set_storage_limit(db, user, limit_bytes)
+    return {"message": "Storage limit updated."}
