@@ -21,5 +21,6 @@ def startup():
     try:
         user_crud.create_admin_if_not_exists(db)
         user_crud.check_dormant_accounts(db)
+        user_crud.clean_old_trash(db)
     finally:
         db.close()
