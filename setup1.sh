@@ -3,8 +3,8 @@
 clear
 
 # Set the path to the file uploads directory and datebase directory.
-UPLOADS_PATH="/mnt/storage/personal-drive/uploads"
-DIR_PATH="/home/haruki/personal_drive/data"
+UPLOADS_PATH="/mnt/storage/arkeon/uploads"
+DIR_PATH="/home/haruki/arkeon/data"
 
 # Set the port for the application to listen on.
 PORT=2926
