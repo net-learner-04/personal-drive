@@ -14,7 +14,6 @@ import uuid
 import mimetypes
 from dotenv import load_dotenv
 from typing import Optional
-from user_crud import get_storage_used
 
 load_dotenv()
 
@@ -416,10 +415,20 @@ def get_starred(db: Session = Depends(get_db), current_user: Users = Depends(get
 
 
 @router.get("/stats")
-def get_stats(db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
-    files = db.query(Files).filter(Files.file_owner == current_user.id, Files.is_deleted == False, Files.is_folder == False).all()
+def get_stats(
+    db: Session = Depends(get_db),
+    current_user: Users = Depends(get_current_user)
+):
+    files = db.query(Files).filter(
+        Files.file_owner == current_user.id,
+        Files.is_deleted == False,
+        Files.is_folder == False
+    ).all()
     total_size = sum(f.file_size or 0 for f in files)
-    trash_count = db.query(Files).filter(Files.file_owner == current_user.id, Files.is_deleted == True).count()
+    trash_count = db.query(Files).filter(
+        Files.file_owner == current_user.id,
+        Files.is_deleted == True
+    ).count()
     return {
         "total_files": len(files),
         "total_size": total_size,
