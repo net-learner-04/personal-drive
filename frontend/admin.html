@@ -3,50 +3,20 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Panel — Personal-Drive</title>
+  <title>Arkeon</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'><rect width='32' height='32' rx='8' fill='url(%23g)'/><defs><linearGradient id='g' x1='0' y1='0' x2='32' y2='32' gradientUnits='userSpaceOnUse'><stop offset='0%25' stop-color='%2306b6d4'/><stop offset='100%25' stop-color='%238b5cf6'/></linearGradient></defs><path d='M10 23L16 9l6 14M12.5 18.5h7' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/></svg>"/>
   <link rel="stylesheet" href="css/style.css"/>
   <style>
-    .user-table{width:100%;border-collapse:collapse;}
-    .user-table th{text-align:left;font-size:0.72rem;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--text3);padding:0.65rem 1rem;border-bottom:1px solid var(--glass-b);}
-    .user-table td{padding:0.85rem 1rem;font-size:0.88rem;border-bottom:1px solid var(--glass-b);vertical-align:middle;}
-    .user-table tr:last-child td{border-bottom:none;}
-    .user-table tbody tr{transition:background var(--t);}
-    .user-table tbody tr:hover{background:var(--surface2);}
-    .user-table-wrap{background:var(--glass);backdrop-filter:blur(16px);border:1px solid var(--glass-b);border-radius:var(--radius);overflow:hidden;overflow-x:auto;}
-
-    .badge-admin{display:inline-flex;align-items:center;gap:0.3rem;background:linear-gradient(135deg,rgba(99,102,241,0.18),rgba(139,92,246,0.14));border:1px solid rgba(99,102,241,0.25);color:#a5b4fc;font-size:0.7rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:99px;}
-    .badge-locked{display:inline-flex;align-items:center;gap:0.3rem;background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.22);color:#fb7185;font-size:0.7rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:99px;}
-    .badge-dormant{display:inline-flex;align-items:center;gap:0.3rem;background:rgba(239,185,91,0.1);border:1px solid rgba(239,185,91,0.22);color:#fbbf24;font-size:0.7rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:99px;}
-    .badge-active{display:inline-flex;align-items:center;gap:0.3rem;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.22);color:#34d399;font-size:0.7rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:99px;}
-    .badge-normal{display:inline-flex;align-items:center;background:var(--surface2);color:var(--text3);font-size:0.7rem;font-weight:600;padding:0.2rem 0.6rem;border-radius:99px;}
-
-    .stat-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem;margin-bottom:2rem;}
-    .stat-mini-card{background:var(--glass);backdrop-filter:blur(14px);border:1px solid var(--glass-b);border-radius:var(--radius-sm);padding:1.1rem 1.25rem;}
-    .stat-mini-label{font-size:0.7rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text3);margin-bottom:0.35rem;}
-    .stat-mini-val{font-size:1.6rem;font-weight:800;letter-spacing:-0.5px;}
-
-    .action-row{display:flex;gap:0.3rem;justify-content:flex-end;flex-wrap:wrap;}
-
-    .modal-overlay{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:2rem;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity 0.25s ease;}
+    .modal-overlay{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:2rem;background:rgba(0,0,0,0.55);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity 0.22s ease;}
     .modal-overlay.open{opacity:1;pointer-events:all;}
-    .modal{width:100%;max-width:420px;padding:2rem;animation:modal-in 0.3s cubic-bezier(0.34,1.56,0.64,1);}
-    @keyframes modal-in{from{opacity:0;transform:scale(0.94) translateY(16px)}to{opacity:1;transform:none}}
+    .modal{width:100%;max-width:420px;padding:1.75rem;animation:modal-in 0.28s cubic-bezier(0.34,1.5,0.64,1);}
+    @keyframes modal-in{from{opacity:0;transform:scale(0.95) translateY(12px);}to{opacity:1;transform:none;}}
     .modal-header{display:flex;align-items:center;gap:0.5rem;margin-bottom:1.25rem;}
-    .modal-title{font-size:1.05rem;font-weight:800;flex:1;}
+    .modal-title{font-size:1rem;font-weight:800;flex:1;}
     .modal-close{background:none;border:none;cursor:pointer;color:var(--text3);padding:0.3rem;border-radius:6px;transition:all var(--t);display:flex;align-items:center;}
     .modal-close:hover{color:var(--text);background:var(--surface2);}
-    .last-login{color:var(--text3);font-size:0.76rem;}
-
-    .mobile-menu-btn{display:none;background:var(--glass);border:1px solid var(--glass-b);border-radius:8px;color:var(--text);cursor:pointer;padding:0.45rem;align-items:center;justify-content:center;}
-    @media(max-width:768px){
-      .mobile-menu-btn{display:flex;}
-      .sidebar{transform:translateX(-100%);transition:transform 0.3s ease;z-index:200;}
-      .sidebar.open{transform:translateX(0);}
-      .main{margin-left:0 !important;}
-      .user-table th:nth-child(3),.user-table td:nth-child(3),
-      .user-table th:nth-child(5),.user-table td:nth-child(5),
-      .user-table th:nth-child(6),.user-table td:nth-child(6){display:none;}
-    }
+    .storage-mini{height:3px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-top:4px;}
+    .storage-mini-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;}
   </style>
 </head>
 <body>
@@ -56,21 +26,19 @@
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-glow"></div>
       <div class="sidebar-logo">
-        <div class="sidebar-logo-icon">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15a4 4 0 0 0 4 4h9a5 5 0 1 0-.23-9.99A5 5 0 0 0 3 15z"/></svg>
-        </div>
-        <span>Personal-Drive</span>
+        <svg class="sidebar-logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="url(#sg)"/><defs><linearGradient id="sg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs><path d="M10 23L16 9l6 14M12.5 18.5h7" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Arkeon</span>
       </div>
       <nav class="sidebar-nav">
         <div class="sidebar-section">Storage</div>
         <div class="nav-item" onclick="window.location.href='dashboard.html'">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-          My Files
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          My Drive
         </div>
-        <div class="sidebar-section" style="margin-top:0.5rem;">Admin</div>
+        <div class="sidebar-section" style="margin-top:0.25rem;">Admin</div>
         <div class="nav-item active">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          Member Management
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Members
         </div>
       </nav>
       <div class="sidebar-bottom">
@@ -78,10 +46,10 @@
           <div class="avatar" id="userAvatar">?</div>
           <div class="user-meta">
             <div class="user-name-el" id="userName">Loading...</div>
-            <div class="user-sub" style="color:#a5b4fc;">Administrator</div>
+            <div class="user-sub" style="color:var(--accent);font-weight:600;">Administrator</div>
           </div>
         </div>
-        <button class="btn btn-ghost btn-sm" style="width:100%;gap:0.5rem;" onclick="auth.logout()">
+        <button class="btn btn-ghost btn-sm" style="width:100%;gap:0.5rem;margin-top:0.35rem;" onclick="auth.logout()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
           Sign Out
         </button>
@@ -90,18 +58,18 @@
 
     <main class="main">
       <header class="topbar-dash">
-        <div style="display:flex;align-items:center;gap:0.75rem;">
+        <div style="display:flex;align-items:center;gap:0.7rem;">
           <button class="mobile-menu-btn" onclick="toggleSidebar()">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
           <span class="topbar-title">Member Management</span>
         </div>
         <div class="topbar-right">
-          <button class="btn btn-ghost btn-sm" onclick="window.location.href='dashboard.html'" style="gap:0.45rem;">
+          <button class="btn btn-ghost btn-sm" onclick="window.location.href='dashboard.html'" style="gap:0.4rem;">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-            <span class="hide-mobile">My Files</span>
+            <span class="hide-mobile">My Drive</span>
           </button>
-          <button class="btn btn-ghost btn-sm" onclick="loadUsers()" style="gap:0.45rem;">
+          <button class="btn btn-ghost btn-sm" onclick="loadUsers()" style="gap:0.4rem;">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
             <span class="hide-mobile">Refresh</span>
           </button>
@@ -125,7 +93,7 @@
           </div>
           <div class="stat-mini-card">
             <div class="stat-mini-label">Dormant</div>
-            <div class="stat-mini-val" id="statDormant" style="color:#fbbf24;">—</div>
+            <div class="stat-mini-val" id="statDormant" style="color:var(--accent3);">—</div>
           </div>
           <div class="stat-mini-card">
             <div class="stat-mini-label">Slots Left</div>
@@ -133,7 +101,7 @@
           </div>
         </div>
 
-        <div id="globalAlert" class="alert" style="margin-bottom:1.25rem;"></div>
+        <div id="globalAlert" class="alert" style="margin-bottom:1.1rem;"></div>
 
         <div class="section-hdr"><span class="section-title">All Members</span></div>
 
@@ -146,12 +114,12 @@
                 <th>Role</th>
                 <th>Status</th>
                 <th>Last Login</th>
-                <th>Failed</th>
+                <th>Storage</th>
                 <th style="text-align:right;">Actions</th>
               </tr>
             </thead>
             <tbody id="userTableBody">
-              <tr><td colspan="7" style="text-align:center;color:var(--text3);padding:2rem;">Loading...</td></tr>
+              <tr><td colspan="7" style="text-align:center;color:var(--text3);padding:2.5rem;">Loading...</td></tr>
             </tbody>
           </table>
         </div>
@@ -159,19 +127,42 @@
     </main>
   </div>
 
+  <!-- Delete Modal -->
   <div class="modal-overlay" id="deleteOverlay" onclick="if(event.target.id==='deleteOverlay')closeDeleteModal()">
     <div class="glass modal">
       <div class="modal-header">
         <span class="modal-title" style="color:var(--danger);">Delete User</span>
-        <button class="modal-close" onclick="closeDeleteModal()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        <button class="modal-close" onclick="closeDeleteModal()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
-      <div style="background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.2);border-radius:var(--radius-sm);padding:0.85rem 1rem;margin-bottom:1.25rem;font-size:0.86rem;color:#fb7185;line-height:1.5;">
+      <div style="background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.18);border-radius:var(--radius-sm);padding:0.8rem 0.95rem;margin-bottom:1.1rem;font-size:0.84rem;color:#fb7185;line-height:1.5;">
         ⚠️ This will permanently delete <strong id="deleteTargetName"></strong> and all their files. This cannot be undone.
       </div>
-      <div id="deleteModalAlert" class="alert" style="margin-bottom:1rem;"></div>
-      <div style="display:flex;gap:0.75rem;">
+      <div id="deleteModalAlert" class="alert" style="margin-bottom:0.85rem;"></div>
+      <div style="display:flex;gap:0.65rem;">
         <button class="btn btn-ghost" style="flex:1;" onclick="closeDeleteModal()">Cancel</button>
-        <button class="btn" id="confirmDeleteBtn" style="flex:1;background:var(--danger);color:#fff;box-shadow:0 4px 18px rgba(244,63,94,0.35);">Delete</button>
+        <button class="btn" id="confirmDeleteBtn" style="flex:1;background:var(--danger);color:#fff;">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Storage Limit Modal -->
+  <div class="modal-overlay" id="storageOverlay" onclick="if(event.target.id==='storageOverlay')closeStorageModal()">
+    <div class="glass modal">
+      <div class="modal-header">
+        <span class="modal-title">Storage Limit</span>
+        <button class="modal-close" onclick="closeStorageModal()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <p style="color:var(--text2);font-size:0.84rem;margin-bottom:1.1rem;">Set storage limit for <strong id="storageLimitTargetName"></strong>. Leave blank for unlimited.</p>
+      <div id="storageModalAlert" class="alert" style="margin-bottom:0.85rem;"></div>
+      <div class="form-stack">
+        <div class="form-group">
+          <label>Limit (GB)</label>
+          <input type="number" id="storageLimitInput" placeholder="e.g. 10 (blank = unlimited)" min="0.1" step="0.1"/>
+        </div>
+        <div style="display:flex;gap:0.65rem;">
+          <button class="btn btn-ghost" style="flex:1;" onclick="closeStorageModal()">Cancel</button>
+          <button class="btn btn-primary" style="flex:1;" id="confirmStorageBtn">Apply</button>
+        </div>
       </div>
     </div>
   </div>
@@ -179,7 +170,6 @@
   <script src="js/api.js"></script>
   <script>
     if (!auth.require()) throw new Error("Unauthorized");
-
     const user = auth.getUser();
     if (user) {
       document.getElementById("userName").textContent = user.name;
@@ -187,6 +177,7 @@
     }
 
     let deleteTargetId = null;
+    let storageTargetId = null;
     let allUsers = [];
 
     function toggleSidebar() { document.getElementById("sidebar").classList.toggle("open"); }
@@ -204,30 +195,39 @@
     }
 
     function formatLastLogin(dt) {
-      if (!dt) return `<span class="last-login">Never</span>`;
-      const d = new Date(dt);
-      const diff = Date.now() - d.getTime();
-      const days = Math.floor(diff / 86400000);
-      if (days === 0) return `<span class="last-login">Today</span>`;
-      if (days === 1) return `<span class="last-login">Yesterday</span>`;
-      if (days < 30) return `<span class="last-login">${days}d ago</span>`;
-      return `<span class="last-login">${d.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</span>`;
+      if (!dt) return `<span style="color:var(--text3);font-size:0.74rem;">Never</span>`;
+      const d = new Date(dt), diff = Date.now() - d.getTime(), days = Math.floor(diff/86400000);
+      if (days === 0) return `<span style="color:var(--text3);font-size:0.74rem;">Today</span>`;
+      if (days === 1) return `<span style="color:var(--text3);font-size:0.74rem;">Yesterday</span>`;
+      if (days < 30) return `<span style="color:var(--text3);font-size:0.74rem;">${days}d ago</span>`;
+      return `<span style="color:var(--text3);font-size:0.74rem;">${d.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}</span>`;
+    }
+
+    function formatStorageCell(used, limit) {
+      const usedStr = formatSize(used || 0);
+      if (!limit) return `<div style="font-size:0.78rem;color:var(--text2);">${usedStr} <span style="color:var(--text3);">/ ∞</span></div>`;
+      const pct = Math.min(100, ((used||0)/limit)*100);
+      const limitStr = formatSize(limit);
+      const color = pct > 90 ? "var(--danger)" : pct > 70 ? "var(--accent3)" : "var(--accent)";
+      return `<div style="font-size:0.78rem;color:var(--text2);">${usedStr} <span style="color:var(--text3);">/ ${limitStr}</span></div>
+        <div class="storage-mini"><div class="storage-mini-fill" style="width:${pct}%;background:${color};"></div></div>`;
     }
 
     async function loadUsers() {
-      const res = await apiFetch("/api/user/admin/users");
-      if (!res) return;
+      const [res, configRes] = await Promise.all([
+        apiFetch("/api/user/admin/users"),
+        apiFetch("/api/user/admin/config")
+      ]);
+      if (!res || !configRes) return;
       if (res.status === 403) {
         showAlert(document.getElementById("globalAlert"), "Admin access required.");
         setTimeout(() => window.location.href = "dashboard.html", 1500);
         return;
       }
-
-      const configRes = await apiFetch("/api/user/admin/config");
       const config = await configRes.json();
       const maxAccount = config.max_account;
-
       allUsers = await res.json();
+
       const total = allUsers.length;
       const locked = allUsers.filter(u => isLocked(u) && !u.is_dormant).length;
       const dormant = allUsers.filter(u => u.is_dormant).length;
@@ -242,7 +242,7 @@
 
       const tbody = document.getElementById("userTableBody");
       if (!allUsers.length) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:2rem;">No users found.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:2.5rem;">No users found.</td></tr>`;
         return;
       }
 
@@ -250,96 +250,118 @@
         const isSelf = u.name === user?.name;
         const locked = isLocked(u);
         const roleBadge = u.is_admin
-          ? `<span class="badge-admin"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Admin</span>`
+          ? `<span class="badge-admin"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Admin</span>`
           : `<span class="badge-normal">Member</span>`;
 
         const actions = [];
         if (!u.is_admin && !isSelf) {
+          actions.push(`<button class="btn btn-ghost btn-sm" onclick="openStorageModal(${u.id},'${u.name.replace(/'/g,"\\'")}',${u.storage_limit||'null'})" style="gap:0.3rem;font-size:0.74rem;" title="Set storage limit">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+            Limit
+          </button>`);
           if (u.is_dormant) {
-            actions.push(`<button class="btn btn-ghost btn-sm" onclick="dormantUnlock(${u.id})" style="gap:0.3rem;font-size:0.76rem;">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            actions.push(`<button class="btn btn-ghost btn-sm" onclick="dormantUnlock(${u.id})" style="gap:0.3rem;font-size:0.74rem;">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
               Reactivate
             </button>`);
           } else if (locked) {
-            actions.push(`<button class="btn btn-ghost btn-sm" onclick="unlockUser(${u.id})" style="gap:0.3rem;font-size:0.76rem;">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+            actions.push(`<button class="btn btn-ghost btn-sm" onclick="unlockUser(${u.id})" style="gap:0.3rem;font-size:0.74rem;">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
               Unlock
             </button>`);
           } else {
-            actions.push(`<button class="btn btn-ghost btn-sm" onclick="lockUser(${u.id})" style="gap:0.3rem;font-size:0.76rem;border-color:rgba(244,63,94,0.3);color:var(--danger);">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            actions.push(`<button class="btn btn-ghost btn-sm" onclick="lockUser(${u.id})" style="gap:0.3rem;font-size:0.74rem;border-color:rgba(244,63,94,0.25);color:var(--danger);">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
               Lock
             </button>`);
           }
           actions.push(`<button class="btn-icon danger" onclick="confirmDelete(${u.id},'${u.name.replace(/'/g,"\\'")}')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
           </button>`);
         }
 
         return `<tr>
           <td>
-            <div style="display:flex;align-items:center;gap:0.6rem;">
-              <div style="width:30px;height:30px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:800;color:#fff;flex-shrink:0;">${u.name[0].toUpperCase()}</div>
-              <span style="font-weight:600;">${u.name}${isSelf ? ' <span style="color:var(--text3);font-size:0.72rem;">(you)</span>' : ''}</span>
+            <div style="display:flex;align-items:center;gap:0.55rem;">
+              <div style="width:28px;height:28px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;color:#fff;flex-shrink:0;">${u.name[0].toUpperCase()}</div>
+              <span style="font-weight:600;font-size:0.86rem;">${u.name}${isSelf?` <span style="color:var(--text3);font-size:0.7rem;">(you)</span>`:''}</span>
             </div>
           </td>
-          <td style="color:var(--text2);font-size:0.82rem;">${u.email || '—'}</td>
+          <td style="color:var(--text2);font-size:0.8rem;">${u.email||'—'}</td>
           <td>${roleBadge}</td>
           <td>${getStatusBadge(u)}</td>
           <td>${formatLastLogin(u.last_login)}</td>
-          <td style="color:${(u.failed_login||0) > 0 ? '#fbbf24' : 'var(--text3)'};font-weight:${(u.failed_login||0) > 0 ? '700' : '400'};font-size:0.84rem;">${u.failed_login || 0}</td>
+          <td style="min-width:100px;">${formatStorageCell(null, u.storage_limit)}</td>
           <td><div class="action-row">${actions.join("")}</div></td>
         </tr>`;
       }).join("");
     }
 
-    async function lockUser(userId) {
-      const res = await apiFetch(`/api/user/admin/users/${userId}/lock`, { method: "PATCH" });
+    async function lockUser(id) {
+      const res = await apiFetch(`/api/user/admin/users/${id}/lock`, {method:"PATCH"});
       if (res?.ok) { showAlert(document.getElementById("globalAlert"), "Account locked.", "success"); loadUsers(); }
-      else showAlert(document.getElementById("globalAlert"), "Failed to lock account.");
+      else showAlert(document.getElementById("globalAlert"), "Failed to lock.");
     }
-
-    async function unlockUser(userId) {
-      const res = await apiFetch(`/api/user/admin/users/${userId}/unlock`, { method: "PATCH" });
+    async function unlockUser(id) {
+      const res = await apiFetch(`/api/user/admin/users/${id}/unlock`, {method:"PATCH"});
       if (res?.ok) { showAlert(document.getElementById("globalAlert"), "Account unlocked.", "success"); loadUsers(); }
-      else showAlert(document.getElementById("globalAlert"), "Failed to unlock account.");
+      else showAlert(document.getElementById("globalAlert"), "Failed to unlock.");
     }
-
-    async function dormantUnlock(userId) {
-      const res = await apiFetch(`/api/user/admin/users/${userId}/dormant-unlock`, { method: "PATCH" });
+    async function dormantUnlock(id) {
+      const res = await apiFetch(`/api/user/admin/users/${id}/dormant-unlock`, {method:"PATCH"});
       if (res?.ok) { showAlert(document.getElementById("globalAlert"), "Account reactivated.", "success"); loadUsers(); }
-      else showAlert(document.getElementById("globalAlert"), "Failed to reactivate account.");
+      else showAlert(document.getElementById("globalAlert"), "Failed to reactivate.");
     }
 
-    function confirmDelete(userId, userName) {
-      deleteTargetId = userId;
-      document.getElementById("deleteTargetName").textContent = `"${userName}"`;
+    function confirmDelete(id, name) {
+      deleteTargetId = id;
+      document.getElementById("deleteTargetName").textContent = `"${name}"`;
       hideAlert(document.getElementById("deleteModalAlert"));
       document.getElementById("deleteOverlay").classList.add("open");
     }
-
-    function closeDeleteModal() {
-      document.getElementById("deleteOverlay").classList.remove("open");
-      deleteTargetId = null;
-    }
+    function closeDeleteModal() { document.getElementById("deleteOverlay").classList.remove("open"); deleteTargetId = null; }
 
     document.getElementById("confirmDeleteBtn").addEventListener("click", async () => {
       if (!deleteTargetId) return;
-      const btn = document.getElementById("confirmDeleteBtn");
-      btn.textContent = "Deleting..."; btn.disabled = true;
-      const res = await apiFetch(`/api/user/admin/users/${deleteTargetId}`, { method: "DELETE" });
-      if (res?.ok) {
-        closeDeleteModal();
-        showAlert(document.getElementById("globalAlert"), "User deleted.", "success");
-        loadUsers();
-      } else {
-        const d = await res.json();
-        showAlert(document.getElementById("deleteModalAlert"), d.detail || "Failed to delete user.");
-      }
+      const btn = document.getElementById("confirmDeleteBtn"); btn.textContent = "Deleting..."; btn.disabled = true;
+      const res = await apiFetch(`/api/user/admin/users/${deleteTargetId}`, {method:"DELETE"});
+      if (res?.ok) { closeDeleteModal(); showAlert(document.getElementById("globalAlert"), "User deleted.", "success"); loadUsers(); }
+      else { const d = await res.json(); showAlert(document.getElementById("deleteModalAlert"), d.detail || "Failed."); }
       btn.textContent = "Delete"; btn.disabled = false;
     });
 
-    document.addEventListener("keydown", e => { if (e.key === "Escape") closeDeleteModal(); });
+    function openStorageModal(id, name, currentLimitBytes) {
+      storageTargetId = id;
+      document.getElementById("storageLimitTargetName").textContent = name;
+      document.getElementById("storageLimitInput").value = currentLimitBytes ? (currentLimitBytes / 1073741824).toFixed(1) : "";
+      hideAlert(document.getElementById("storageModalAlert"));
+      document.getElementById("storageOverlay").classList.add("open");
+    }
+    function closeStorageModal() { document.getElementById("storageOverlay").classList.remove("open"); storageTargetId = null; }
+
+    document.getElementById("confirmStorageBtn").addEventListener("click", async () => {
+      if (!storageTargetId) return;
+      const val = document.getElementById("storageLimitInput").value.trim();
+      const limitGb = val === "" ? null : parseFloat(val);
+      if (val !== "" && (isNaN(limitGb) || limitGb <= 0)) {
+        showAlert(document.getElementById("storageModalAlert"), "Please enter a valid number greater than 0.");
+        return;
+      }
+      const btn = document.getElementById("confirmStorageBtn"); btn.textContent = "Applying..."; btn.disabled = true;
+      const params = limitGb !== null ? `?limit_gb=${limitGb}` : "?limit_gb=";
+      const res = await apiFetch(`/api/user/admin/users/${storageTargetId}/storage-limit${params}`, {method:"PATCH"});
+      if (res?.ok) {
+        closeStorageModal();
+        showAlert(document.getElementById("globalAlert"), limitGb ? `Storage limit set to ${limitGb} GB.` : "Storage limit removed (unlimited).", "success");
+        loadUsers();
+      } else { const d = await res.json(); showAlert(document.getElementById("storageModalAlert"), d.detail || "Failed."); }
+      btn.textContent = "Apply"; btn.disabled = false;
+    });
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") { closeDeleteModal(); closeStorageModal(); }
+    });
+
     loadUsers();
   </script>
 </body>
