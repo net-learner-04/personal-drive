@@ -1,16 +1,10 @@
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from datetime import datetime, timedelta
+from config import SENDGRID_API_KEY, MAIL_FROM, MAIL_FROM_NAME
 from dotenv import load_dotenv
 import random
 import string
-import os
-
-load_dotenv()
-
-SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
-MAIL_FROM = os.getenv("MAIL_FROM")
-MAIL_FROM_NAME = os.getenv("MAIL_FROM_NAME", "Personal-Drive")
 
 verify_store = {}
 
