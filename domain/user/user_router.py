@@ -11,7 +11,6 @@ from models import Users
 from auth import create_access_token, get_current_user
 from mailer import send_reset_code, send_register_code, verify_code, send_dormant_unlock_code
 from domain.user import user_crud, user_schema
-from domain.user.user_crud import passwd_context
 
 os.makedirs(PROFILE_DIR, exist_ok=True)
 
