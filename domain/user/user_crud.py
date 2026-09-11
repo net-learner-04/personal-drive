@@ -5,7 +5,7 @@ from models import Users
 from passlib.context import CryptContext
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
-import shutil
+import shutil, os
 
 
 def get_existing_user(db: Session, user_create: UserCreate):
