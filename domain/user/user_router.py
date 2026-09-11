@@ -3,9 +3,9 @@ from sqlalchemy.orm import Session
 from starlette import status
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.responses import FileResponse
+from config import UPLOAD_DIR, PROFILE_DIR
 import os
 import shutil
-
 from db import get_db
 from models import Users
 from auth import create_access_token, get_current_user
@@ -13,8 +13,6 @@ from mailer import send_reset_code, send_register_code, verify_code, send_dorman
 from domain.user import user_crud, user_schema
 from domain.user.user_crud import passwd_context
 
-UPLOAD_DIR = os.getenv("UPLOAD_DIR", "./uploads")
-PROFILE_DIR = os.path.join(UPLOAD_DIR, "_profiles")
 os.makedirs(PROFILE_DIR, exist_ok=True)
 
 router = APIRouter(prefix="/api/user")
