@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Query, Request
 from fastapi.responses import FileResponse, StreamingResponse
 from sqlalchemy.orm import Session
+from config import UPLOAD_DIR
 from starlette import status
 from pydantic import BaseModel
 from datetime import datetime, timedelta
@@ -15,9 +16,6 @@ import mimetypes
 from dotenv import load_dotenv
 from typing import Optional
 
-load_dotenv()
-
-UPLOAD_DIR = os.getenv("UPLOAD_DIR")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 PREVIEWABLE = {
