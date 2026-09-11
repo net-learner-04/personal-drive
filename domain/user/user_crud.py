@@ -1,20 +1,11 @@
 from sqlalchemy.orm import Session
 from domain.user.user_schema import UserCreate
+from config import UPLOAD_DIR, MAX_ACCOUNT, MAX_FAILED_LOGIN, LOCKOUT_MINUTES, DORMANT_DAYS, ADMIN_USERNAME, ADMIN_PASSWORD, ADMIN_EMAIL
 from models import Users
 from passlib.context import CryptContext
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
-import os
 import shutil
-
-load_dotenv()
-
-UPLOAD_DIR = os.getenv("UPLOAD_DIR")
-passwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-MAX_ACCOUNT = int(os.getenv("MAX_ACCOUNT"))
-MAX_FAILED_LOGIN = 5
-LOCKOUT_MINUTES = 15
-DORMANT_DAYS = 30
 
 
 def get_existing_user(db: Session, user_create: UserCreate):
