@@ -433,3 +433,16 @@ def get_stats(
         "storage_limit": current_user.storage_limit,
         "trash_count": trash_count
     }
+
+
+@router.get("/storage-breakdown")
+def get_storage_breakdown(
+    db: Session = Depends(get_db),
+    current_user: Users = Depends(get_current_user)
+):
+    files = db.query(Files).filter(
+        Files.file_owner == current_user.id,
+        Files.is_deleted == False,
+        Files.is_folder == False
+    ).order_by(Files.file_size.desc()).limit(100).all()
+    return files
