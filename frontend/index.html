@@ -4,22 +4,22 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Arkeon</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none'><rect width='120' height='120' rx='28' fill='url(%23g)'/><defs><linearGradient id='g' x1='0' y1='0' x2='120' y2='120' gradientUnits='userSpaceOnUse'><stop offset='0%25' stop-color='%2306b6d4'/><stop offset='100%25' stop-color='%238b5cf6'/></linearGradient></defs><line x1='30' y1='96' x2='60' y2='20' stroke='white' stroke-width='11' stroke-linecap='round'/><line x1='90' y1='96' x2='60' y2='20' stroke='white' stroke-width='11' stroke-linecap='round'/><path d='M42 64 Q60 49 78 64' stroke='white' stroke-width='8' stroke-linecap='round' fill='none'/><path d='M44 28 A22 22 0 0 1 76 28' stroke='white' stroke-width='4' stroke-linecap='round' fill='none' opacity='0.65'/></svg>"/>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none'><rect width='120' height='120' rx='28' fill='%230e7490'/><polygon points='60,18 95,38 95,78 60,98 25,78 25,38' stroke='white' stroke-width='4' fill='none' opacity='.95'/><polygon points='60,34 80,45 80,68 60,80 40,68 40,45' stroke='white' stroke-width='2.5' fill='white' opacity='.18'/><line x1='60' y1='18' x2='60' y2='34' stroke='white' stroke-width='2' opacity='.55'/><line x1='95' y1='38' x2='80' y2='45' stroke='white' stroke-width='2' opacity='.55'/><line x1='95' y1='78' x2='80' y2='68' stroke='white' stroke-width='2' opacity='.55'/><line x1='60' y1='98' x2='60' y2='80' stroke='white' stroke-width='2' opacity='.55'/><line x1='25' y1='78' x2='40' y2='68' stroke='white' stroke-width='2' opacity='.55'/><line x1='25' y1='38' x2='40' y2='45' stroke='white' stroke-width='2' opacity='.55'/><circle cx='60' cy='57' r='10' fill='white' opacity='.95'/></svg>"/>
   <link rel="stylesheet" href="css/style.css"/>
   <style>
     #constellation{position:fixed;inset:0;z-index:0;pointer-events:none;}
     .topbar{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;}
     .top-logo{display:flex;align-items:center;gap:0.6rem;font-size:0.95rem;font-weight:900;letter-spacing:-0.3px;color:var(--text);text-decoration:none;}
     .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;position:relative;z-index:1;}
-    .hero-icon{width:88px;height:88px;border-radius:22px;margin-bottom:1.5rem;filter:drop-shadow(0 8px 24px rgba(6,182,212,0.3));animation:icon-in 0.6s cubic-bezier(0.34,1.5,0.64,1);}
-    .hero-name{font-size:2rem;font-weight:900;letter-spacing:-0.8px;margin-bottom:0.6rem;animation:card-in 0.5s 0.1s ease both;}
-    .hero-tagline{font-size:0.75rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);margin-bottom:3rem;animation:card-in 0.5s 0.2s ease both;}
-    .hero-btns{display:flex;gap:0.85rem;flex-wrap:wrap;justify-content:center;animation:card-in 0.5s 0.3s ease both;}
-    .btn-hero-primary{display:inline-flex;align-items:center;gap:0.5rem;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:99px;color:#fff;cursor:pointer;font-family:inherit;font-size:0.93rem;font-weight:700;padding:0.82rem 2rem;text-decoration:none;transition:all 0.22s ease;box-shadow:0 4px 20px var(--accent-glow);}
-    .btn-hero-primary:hover{transform:translateY(-3px);box-shadow:0 8px 32px var(--accent-glow);color:#fff;}
-    .btn-hero-ghost{display:inline-flex;align-items:center;gap:0.5rem;background:var(--glass);backdrop-filter:blur(12px);border:1px solid var(--glass-b);border-radius:99px;color:var(--text);cursor:pointer;font-family:inherit;font-size:0.93rem;font-weight:600;padding:0.82rem 2rem;text-decoration:none;transition:all 0.22s ease;}
+    .hero-icon{width:96px;height:96px;margin-bottom:1.5rem;filter:drop-shadow(0 8px 28px rgba(6,182,212,0.4));animation:icon-in 0.6s cubic-bezier(0.34,1.5,0.64,1);}
+    .hero-name{font-size:2.2rem;font-weight:900;letter-spacing:-0.8px;margin-bottom:0.5rem;animation:card-in 0.5s 0.1s ease both;}
+    .hero-tagline{font-size:0.75rem;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--text3);margin-bottom:3rem;animation:card-in 0.5s 0.18s ease both;}
+    .hero-btns{display:flex;gap:0.85rem;flex-wrap:wrap;justify-content:center;animation:card-in 0.5s 0.26s ease both;}
+    .btn-hero-primary{display:inline-flex;align-items:center;gap:0.5rem;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:99px;color:#fff;cursor:pointer;font-family:inherit;font-size:0.93rem;font-weight:700;padding:0.85rem 2.1rem;text-decoration:none;transition:all 0.22s ease;box-shadow:0 4px 20px var(--accent-glow);}
+    .btn-hero-primary:hover{transform:translateY(-3px);box-shadow:0 10px 36px var(--accent-glow);color:#fff;}
+    .btn-hero-ghost{display:inline-flex;align-items:center;gap:0.5rem;background:var(--glass);backdrop-filter:blur(14px);border:1px solid var(--glass-b);border-radius:99px;color:var(--text);cursor:pointer;font-family:inherit;font-size:0.93rem;font-weight:600;padding:0.85rem 2.1rem;text-decoration:none;transition:all 0.22s ease;}
     .btn-hero-ghost:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-3px);}
-    @keyframes icon-in{from{opacity:0;transform:scale(0.7) translateY(20px);}to{opacity:1;transform:none;}}
+    @keyframes icon-in{from{opacity:0;transform:scale(0.65) translateY(24px);}to{opacity:1;transform:none;}}
     @keyframes card-in{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
   </style>
 </head>
@@ -28,13 +28,18 @@
 
   <div class="topbar">
     <a href="/" class="top-logo">
-      <svg width="24" height="24" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg width="26" height="26" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect width="120" height="120" rx="28" fill="url(#tg)"/>
-        <defs><linearGradient id="tg" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
-        <line x1="30" y1="96" x2="60" y2="20" stroke="white" stroke-width="11" stroke-linecap="round"/>
-        <line x1="90" y1="96" x2="60" y2="20" stroke="white" stroke-width="11" stroke-linecap="round"/>
-        <path d="M42 64 Q60 49 78 64" stroke="white" stroke-width="8" stroke-linecap="round" fill="none"/>
-        <path d="M44 28 A22 22 0 0 1 76 28" stroke="white" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.65"/>
+        <defs><linearGradient id="tg" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
+        <polygon points="60,18 95,38 95,78 60,98 25,78 25,38" stroke="white" stroke-width="4" fill="none" opacity=".95"/>
+        <polygon points="60,34 80,45 80,68 60,80 40,68 40,45" stroke="white" stroke-width="2.5" fill="white" opacity=".18"/>
+        <line x1="60" y1="18" x2="60" y2="34" stroke="white" stroke-width="2" opacity=".55"/>
+        <line x1="95" y1="38" x2="80" y2="45" stroke="white" stroke-width="2" opacity=".55"/>
+        <line x1="95" y1="78" x2="80" y2="68" stroke="white" stroke-width="2" opacity=".55"/>
+        <line x1="60" y1="98" x2="60" y2="80" stroke="white" stroke-width="2" opacity=".55"/>
+        <line x1="25" y1="78" x2="40" y2="68" stroke="white" stroke-width="2" opacity=".55"/>
+        <line x1="25" y1="38" x2="40" y2="45" stroke="white" stroke-width="2" opacity=".55"/>
+        <circle cx="60" cy="57" r="10" fill="white" opacity=".95"/>
       </svg>
       Arkeon
     </a>
@@ -47,33 +52,27 @@
   <div class="hero page">
     <svg class="hero-icon" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect width="120" height="120" rx="28" fill="url(#hg)"/>
-      <defs>
-        <linearGradient id="hg" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stop-color="#06b6d4"/>
-          <stop offset="50%" stop-color="#0ea5e9"/>
-          <stop offset="100%" stop-color="#8b5cf6"/>
-        </linearGradient>
-      </defs>
-      <!-- Left leg -->
-      <line x1="30" y1="96" x2="60" y2="20" stroke="white" stroke-width="11" stroke-linecap="round"/>
-      <!-- Right leg -->
-      <line x1="90" y1="96" x2="60" y2="20" stroke="white" stroke-width="11" stroke-linecap="round"/>
-      <!-- Curved crossbar swoosh -->
-      <path d="M42 64 Q60 49 78 64" stroke="white" stroke-width="8" stroke-linecap="round" fill="none"/>
-      <!-- Arc halo at top -->
-      <path d="M44 28 A22 22 0 0 1 76 28" stroke="white" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.65"/>
-      <!-- Small dot at peak -->
-      <circle cx="60" cy="20" r="4" fill="white" opacity="0.9"/>
+      <defs><linearGradient id="hg" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox"><stop offset="0%" stop-color="#06b6d4"/><stop offset="50%" stop-color="#0ea5e9"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
+      <rect width="120" height="60" rx="28" fill="white" opacity="0.06"/>
+      <polygon points="60,18 95,38 95,78 60,98 25,78 25,38" stroke="white" stroke-width="4" fill="none" opacity=".95"/>
+      <polygon points="60,34 80,45 80,68 60,80 40,68 40,45" stroke="white" stroke-width="2.5" fill="white" opacity=".18"/>
+      <line x1="60" y1="18" x2="60" y2="34" stroke="white" stroke-width="2" opacity=".55"/>
+      <line x1="95" y1="38" x2="80" y2="45" stroke="white" stroke-width="2" opacity=".55"/>
+      <line x1="95" y1="78" x2="80" y2="68" stroke="white" stroke-width="2" opacity=".55"/>
+      <line x1="60" y1="98" x2="60" y2="80" stroke="white" stroke-width="2" opacity=".55"/>
+      <line x1="25" y1="78" x2="40" y2="68" stroke="white" stroke-width="2" opacity=".55"/>
+      <line x1="25" y1="38" x2="40" y2="45" stroke="white" stroke-width="2" opacity=".55"/>
+      <circle cx="60" cy="57" r="10" fill="white" opacity=".95"/>
     </svg>
 
     <div class="hero-name">Arkeon</div>
     <div class="hero-tagline">Private &middot; Secure &middot; Self-hosted</div>
-      <a href="https://github.com/net-learner-04/arkeon" target="_blank" rel="noopener"
-         style="display:inline-flex;align-items:center;gap:0.45rem;color:var(--text3);font-size:0.8rem;font-weight:600;text-decoration:none;margin-top:-2rem;margin-bottom:2.5rem;transition:color 0.2s ease;"
-         onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text3)'">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-        View on GitHub
-      </a>
+    <a href="https://github.com/net-learner-04/arkeon" target="_blank" rel="noopener"
+       style="display:inline-flex;align-items:center;gap:0.45rem;color:var(--text3);font-size:0.8rem;font-weight:600;text-decoration:none;margin-top:-2rem;margin-bottom:2.5rem;transition:color 0.2s ease;"
+       onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text3)'">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      View on GitHub
+    </a>
     <div class="hero-btns">
       <a href="login.html" class="btn-hero-primary">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
@@ -93,76 +92,62 @@
     const canvas = document.getElementById("constellation");
     const ctx = canvas.getContext("2d");
     let pts = [], W, H, animId;
-    const N = 90, DIST = 150;
+    const N = 140, DIST = 160;
 
-    function isDark() { return document.documentElement.getAttribute("data-theme") === "dark"; }
+    function isDark() { return document.documentElement.getAttribute("data-theme") !== "light"; }
 
-    function resize() {
-      W = canvas.width = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-    }
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
 
     function init() {
       resize();
       pts = Array.from({length: N}, () => ({
-        x: Math.random() * W,
-        y: Math.random() * H,
-        vx: (Math.random() - 0.5) * 0.25,
-        vy: (Math.random() - 0.5) * 0.25,
-        r: Math.random() * 1.4 + 0.4,
-        op: Math.random() * 0.45 + 0.2,
-        twinkle: Math.random() * Math.PI * 2,
-        twinkleSpeed: Math.random() * 0.015 + 0.005
+        x: Math.random() * W, y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.28, vy: (Math.random() - 0.5) * 0.28,
+        r: Math.random() * 1.8 + 0.5,
+        op: Math.random() * 0.55 + 0.3,
+        tw: Math.random() * Math.PI * 2,
+        ts: Math.random() * 0.012 + 0.004
       }));
     }
 
     function draw() {
       ctx.clearRect(0, 0, W, H);
       const dark = isDark();
-      const starR = dark ? "6,182,212" : "8,145,178";
-      const lineR = dark ? "139,92,246" : "124,58,237";
+      const sR = dark ? "6,182,212" : "8,145,178";
+      const lR = dark ? "139,92,246" : "124,58,237";
 
       for (const p of pts) {
-        p.x += p.vx; p.y += p.vy;
-        p.twinkle += p.twinkleSpeed;
-        if (p.x < -10) p.x = W + 10;
-        if (p.x > W + 10) p.x = -10;
-        if (p.y < -10) p.y = H + 10;
-        if (p.y > H + 10) p.y = -10;
+        p.x += p.vx; p.y += p.vy; p.tw += p.ts;
+        if (p.x < -10) p.x = W+10; if (p.x > W+10) p.x = -10;
+        if (p.y < -10) p.y = H+10; if (p.y > H+10) p.y = -10;
       }
-
       for (let i = 0; i < N; i++) {
-        for (let j = i + 1; j < N; j++) {
-          const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
-          const d = Math.sqrt(dx * dx + dy * dy);
+        for (let j = i+1; j < N; j++) {
+          const dx = pts[i].x-pts[j].x, dy = pts[i].y-pts[j].y;
+          const d = Math.sqrt(dx*dx+dy*dy);
           if (d < DIST) {
-            const a = (1 - d / DIST) * (dark ? 0.18 : 0.1);
+            const a = (1-d/DIST) * (dark ? 0.32 : 0.18);
             ctx.beginPath();
-            ctx.strokeStyle = `rgba(${lineR},${a})`;
-            ctx.lineWidth = 0.6;
+            ctx.strokeStyle = `rgba(${lR},${a})`;
+            ctx.lineWidth = 0.7;
             ctx.moveTo(pts[i].x, pts[i].y);
             ctx.lineTo(pts[j].x, pts[j].y);
             ctx.stroke();
           }
         }
       }
-
       for (const p of pts) {
-        const tw = p.op + Math.sin(p.twinkle) * 0.12;
+        const tw = p.op + Math.sin(p.tw) * 0.15;
         ctx.beginPath();
-        ctx.fillStyle = `rgba(${starR},${tw})`;
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${sR},${tw})`;
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
         ctx.fill();
       }
-
       animId = requestAnimationFrame(draw);
     }
 
     window.addEventListener("resize", () => { cancelAnimationFrame(animId); init(); draw(); });
     init(); draw();
-
-    const obs = new MutationObserver(() => {});
-    obs.observe(document.documentElement, {attributes: true, attributeFilter: ["data-theme"]});
   </script>
 </body>
 </html>
