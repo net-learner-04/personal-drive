@@ -1,19 +1,13 @@
 from datetime import datetime, timedelta
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
+from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 from starlette import status
 from db import get_db
 from dotenv import load_dotenv
 from models import Users
-import os
-
-load_dotenv()
-
-SECRET_KEY = str(os.getenv("SECRET_KEY"))
-ALGORITHM = str(os.getenv("ALGORITHM"))
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/user/login")
 
