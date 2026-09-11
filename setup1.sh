@@ -21,8 +21,8 @@ then
     echo "The database directory cannot be found."
     echo "Create a directory and assign permissions."
     mkdir -p "$DIR_PATH"
-    chown -R haruki:haruki /home/haruki/personal_drive/data
-    chmod 755 /home/haruki/personal_drive/data
+    chown -R haruki:haruki /home/haruki/arkeon/data
+    chmod 755 /home/haruki/arkeon/data
 fi
 
 # Check if Python packages are installed.
