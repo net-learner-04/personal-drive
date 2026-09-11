@@ -1,11 +1,16 @@
 from sqlalchemy.orm import Session
 from domain.user.user_schema import UserCreate
-from config import UPLOAD_DIR, MAX_ACCOUNT, MAX_FAILED_LOGIN, LOCKOUT_MINUTES, DORMANT_DAYS, ADMIN_USERNAME, ADMIN_PASSWORD, ADMIN_EMAIL
+from config import (
+    UPLOAD_DIR, MAX_ACCOUNT, MAX_FAILED_LOGIN, LOCKOUT_MINUTES,
+    DORMANT_DAYS, ADMIN_USERNAME, ADMIN_PASSWORD, ADMIN_EMAIL
+)
 from models import Users
 from passlib.context import CryptContext
-from dotenv import load_dotenv
 from datetime import datetime, timedelta
-import shutil, os
+import shutil
+import os
+
+passwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def get_existing_user(db: Session, user_create: UserCreate):
@@ -18,6 +23,10 @@ def get_user(db: Session, username: str):
 
 def get_user_by_id(db: Session, user_id: int):
     return db.query(Users).filter(Users.id == user_id).first()
+
+
+def get_user_by_email(db: Session, email: str):
+    return db.query(Users).filter(Users.email == email).first()
 
 
 def get_all_users(db: Session):
@@ -50,23 +59,19 @@ def create_user(db: Session, user_create: UserCreate, is_admin: bool = False):
 
 
 def create_admin_if_not_exists(db: Session):
-    admin_name = os.getenv("ADMIN_USERNAME")
-    admin_password = os.getenv("ADMIN_PASSWORD")
-    admin_email = os.getenv("ADMIN_EMAIL")
-
-    if not admin_name or not admin_password:
+    if not ADMIN_USERNAME or not ADMIN_PASSWORD:
         return
 
-    existing = db.query(Users).filter(Users.name == admin_name).first()
+    existing = db.query(Users).filter(Users.name == ADMIN_USERNAME).first()
     if existing:
         return
 
     from domain.user.user_schema import UserCreate
     admin_create = UserCreate(
-        name=admin_name,
-        passwd1=admin_password,
-        passwd2=admin_password,
-        email=admin_email or f"{admin_name}@localhost"
+        name=ADMIN_USERNAME,
+        passwd1=ADMIN_PASSWORD,
+        passwd2=ADMIN_PASSWORD,
+        email=ADMIN_EMAIL or f"{ADMIN_USERNAME}@localhost"
     )
     create_user(db, admin_create, is_admin=True)
 
@@ -79,14 +84,11 @@ def check_login(db: Session, username: str, password: str):
     user = get_user(db, username)
     if not user:
         return None, "User not found.", None
-
     if user.is_dormant:
         return None, "dormant", user
-
     if user.locked_until and datetime.now() < user.locked_until:
         remaining = int((user.locked_until - datetime.now()).total_seconds() / 60) + 1
         return None, f"Account locked. Try again in {remaining} minute(s).", None
-
     if not passwd_context.verify(password, user.passwd):
         user.failed_login = (user.failed_login or 0) + 1
         if user.failed_login >= MAX_FAILED_LOGIN:
@@ -97,7 +99,32 @@ def check_login(db: Session, username: str, password: str):
         db.commit()
         remaining_attempts = MAX_FAILED_LOGIN - user.failed_login
         return None, f"Incorrect password. {remaining_attempts} attempt(s) remaining.", None
+    user.failed_login = 0
+    user.locked_until = None
+    user.last_login = datetime.now()
+    db.commit()
+    return user, None, None
 
+
+def check_login_by_email(db: Session, email: str, password: str):
+    user = get_user_by_email(db, email)
+    if not user:
+        return None, "No account found with this email.", None
+    if user.is_dormant:
+        return None, "dormant", user
+    if user.locked_until and datetime.now() < user.locked_until:
+        remaining = int((user.locked_until - datetime.now()).total_seconds() / 60) + 1
+        return None, f"Account locked. Try again in {remaining} minute(s).", None
+    if not passwd_context.verify(password, user.passwd):
+        user.failed_login = (user.failed_login or 0) + 1
+        if user.failed_login >= MAX_FAILED_LOGIN:
+            user.locked_until = datetime.now() + timedelta(minutes=LOCKOUT_MINUTES)
+            user.failed_login = 0
+            db.commit()
+            return None, f"Too many failed attempts. Account locked for {LOCKOUT_MINUTES} minutes.", None
+        db.commit()
+        remaining_attempts = MAX_FAILED_LOGIN - user.failed_login
+        return None, f"Incorrect password. {remaining_attempts} attempt(s) remaining.", None
     user.failed_login = 0
     user.locked_until = None
     user.last_login = datetime.now()
@@ -160,36 +187,6 @@ def activate_dormant(db: Session, user: Users):
     user.is_dormant = False
     user.last_login = datetime.now()
     db.commit()
-
-
-def get_user_by_email(db: Session, email: str):
-    return db.query(Users).filter(Users.email == email).first()
-
-
-def check_login_by_email(db: Session, email: str, password: str):
-    user = get_user_by_email(db, email)
-    if not user:
-        return None, "No account found with this email.", None
-    if user.is_dormant:
-        return None, "dormant", user
-    if user.locked_until and datetime.now() < user.locked_until:
-        remaining = int((user.locked_until - datetime.now()).total_seconds() / 60) + 1
-        return None, f"Account locked. Try again in {remaining} minute(s).", None
-    if not passwd_context.verify(password, user.passwd):
-        user.failed_login = (user.failed_login or 0) + 1
-        if user.failed_login >= MAX_FAILED_LOGIN:
-            user.locked_until = datetime.now() + timedelta(minutes=LOCKOUT_MINUTES)
-            user.failed_login = 0
-            db.commit()
-            return None, f"Too many failed attempts. Account locked for {LOCKOUT_MINUTES} minutes.", None
-        db.commit()
-        remaining_attempts = MAX_FAILED_LOGIN - user.failed_login
-        return None, f"Incorrect password. {remaining_attempts} attempt(s) remaining.", None
-    user.failed_login = 0
-    user.locked_until = None
-    user.last_login = datetime.now()
-    db.commit()
-    return user, None, None
 
 
 def get_storage_used(db: Session, user_id: int):
