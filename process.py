@@ -18,6 +18,9 @@ from typing import Optional
 
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
+TRASH_DIR = os.path.join(UPLOAD_DIR, "_trash")
+os.makedirs(TRASH_DIR, exist_ok=True)
+
 PREVIEWABLE = {
     "image/jpeg", "image/png", "image/gif", "image/webp", "image/svg+xml",
     "application/pdf", "text/plain",
@@ -294,7 +297,6 @@ def delete_file(
     current_user: Users = Depends(get_current_user)
 ):
     file = _get_owned_file(db, file_id, current_user)
-
     if file.is_folder:
         children = db.query(Files).filter(
             Files.parent_id == file_id,
@@ -302,13 +304,21 @@ def delete_file(
         ).all()
         for child in children:
             child.is_deleted = True
-        if os.path.exists(file.file_path):
-            shutil.rmtree(file.file_path)
+            child.deleted_at = datetime.now()
+        file.is_deleted = True
+        file.deleted_at = datetime.now()
     else:
+        user_trash = os.path.join(TRASH_DIR, str(current_user.id))
+        os.makedirs(user_trash, exist_ok=True)
+        trash_path = os.path.join(user_trash, file.file_name)
+        if os.path.exists(trash_path):
+            base, ext = os.path.splitext(file.file_name)
+            trash_path = os.path.join(user_trash, f"{base}_{file.id}{ext}")
         if os.path.exists(file.file_path):
-            os.remove(file.file_path)
-
-    file.is_deleted = True
+            shutil.move(file.file_path, trash_path)
+        file.file_path = trash_path
+        file.is_deleted = True
+        file.deleted_at = datetime.now()
     db.commit()
 
 
@@ -354,24 +364,40 @@ def download_shared_file(token: str, db: Session = Depends(get_db)):
     return FileResponse(path=file.file_path, filename=file.file_name)
 
 
-@router.delete("/delete/{file_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_file(file_id: int, db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
-    file = _get_owned_file(db, file_id, current_user)
-    file.is_deleted = True
-    file.deleted_at = datetime.now()
-    db.commit()
-
-
 @router.get("/trash")
 def get_trash(db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
     return db.query(Files).filter(Files.file_owner == current_user.id, Files.is_deleted == True).all()
 
 
 @router.patch("/trash/restore/{file_id}")
-def restore_file(file_id: int, db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
-    file = db.query(Files).filter(Files.id == file_id, Files.file_owner == current_user.id, Files.is_deleted == True).first()
+def restore_file(
+    file_id: int,
+    db: Session = Depends(get_db),
+    current_user: Users = Depends(get_current_user)
+):
+    file = db.query(Files).filter(
+        Files.id == file_id,
+        Files.file_owner == current_user.id,
+        Files.is_deleted == True
+    ).first()
     if not file:
-        raise HTTPException(status_code=404, detail="File not found in trash.")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found in trash.")
+    if file.parent_id:
+        parent = db.query(Files).filter(
+            Files.id == file.parent_id,
+            Files.is_deleted == False
+        ).first()
+        restore_dir = parent.file_path if parent else current_user.storage_path
+    else:
+        restore_dir = current_user.storage_path
+    os.makedirs(restore_dir, exist_ok=True)
+    restore_path = os.path.join(restore_dir, file.file_name)
+    if os.path.exists(restore_path):
+        base, ext = os.path.splitext(file.file_name)
+        restore_path = os.path.join(restore_dir, f"{base}_restored{ext}")
+    if os.path.exists(file.file_path):
+        shutil.move(file.file_path, restore_path)
+    file.file_path = restore_path
     file.is_deleted = False
     file.deleted_at = None
     db.commit()
@@ -379,10 +405,18 @@ def restore_file(file_id: int, db: Session = Depends(get_db), current_user: User
 
 
 @router.delete("/trash/permanent/{file_id}", status_code=status.HTTP_204_NO_CONTENT)
-def permanent_delete(file_id: int, db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
-    file = db.query(Files).filter(Files.id == file_id, Files.file_owner == current_user.id, Files.is_deleted == True).first()
+def permanent_delete(
+    file_id: int,
+    db: Session = Depends(get_db),
+    current_user: Users = Depends(get_current_user)
+):
+    file = db.query(Files).filter(
+        Files.id == file_id,
+        Files.file_owner == current_user.id,
+        Files.is_deleted == True
+    ).first()
     if not file:
-        raise HTTPException(status_code=404, detail="File not found in trash.")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found.")
     if file.file_path and os.path.exists(file.file_path):
         os.remove(file.file_path)
     db.delete(file)
@@ -390,11 +424,25 @@ def permanent_delete(file_id: int, db: Session = Depends(get_db), current_user: 
 
 
 @router.delete("/trash/empty", status_code=status.HTTP_204_NO_CONTENT)
-def empty_trash(db: Session = Depends(get_db), current_user: Users = Depends(get_current_user)):
-    files = db.query(Files).filter(Files.file_owner == current_user.id, Files.is_deleted == True, Files.is_folder == False).all()
+def empty_trash(
+    db: Session = Depends(get_db),
+    current_user: Users = Depends(get_current_user)
+):
+    files = db.query(Files).filter(
+        Files.file_owner == current_user.id,
+        Files.is_deleted == True,
+        Files.is_folder == False
+    ).all()
     for f in files:
         if f.file_path and os.path.exists(f.file_path):
             os.remove(f.file_path)
+        db.delete(f)
+    folders = db.query(Files).filter(
+        Files.file_owner == current_user.id,
+        Files.is_deleted == True,
+        Files.is_folder == True
+    ).all()
+    for f in folders:
         db.delete(f)
     db.commit()
 
