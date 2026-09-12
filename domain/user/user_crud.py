@@ -4,11 +4,10 @@ from config import (
     UPLOAD_DIR, MAX_ACCOUNT, MAX_FAILED_LOGIN, LOCKOUT_MINUTES,
     DORMANT_DAYS, ADMIN_USERNAME, ADMIN_PASSWORD, ADMIN_EMAIL
 )
-from models import Users
+from models import Users, Files
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
-import shutil
-import os
+import shutil, os
 
 passwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -66,7 +65,6 @@ def create_admin_if_not_exists(db: Session):
     if existing:
         return
 
-    from domain.user.user_schema import UserCreate
     admin_create = UserCreate(
         name=ADMIN_USERNAME,
         passwd1=ADMIN_PASSWORD,
@@ -190,7 +188,6 @@ def activate_dormant(db: Session, user: Users):
 
 
 def get_storage_used(db: Session, user_id: int):
-    from models import Files
     files = db.query(Files).filter(
         Files.file_owner == user_id,
         Files.is_deleted == False,
@@ -205,7 +202,6 @@ def set_storage_limit(db: Session, user: Users, limit_bytes):
 
 
 def clean_old_trash(db: Session):
-    from models import Files
     threshold = datetime.now() - timedelta(days=30)
     old = db.query(Files).filter(
         Files.is_deleted == True,
