@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Arkeon</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'><rect width='32' height='32' rx='8' fill='url(%23g)'/><defs><linearGradient id='g' x1='0' y1='0' x2='32' y2='32' gradientUnits='userSpaceOnUse'><stop offset='0%25' stop-color='%2306b6d4'/><stop offset='100%25' stop-color='%238b5cf6'/></linearGradient></defs><path d='M10 23L16 9l6 14M12.5 18.5h7' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/></svg>"/>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none'><rect width='120' height='120' rx='28' fill='%230e7490'/><polygon points='60,18 95,38 95,78 60,98 25,78 25,38' stroke='white' stroke-width='4' fill='none' opacity='.95'/><polygon points='60,34 80,45 80,68 60,80 40,68 40,45' stroke='white' stroke-width='2.5' fill='white' opacity='.18'/><line x1='60' y1='18' x2='60' y2='34' stroke='white' stroke-width='2' opacity='.55'/><line x1='95' y1='38' x2='80' y2='45' stroke='white' stroke-width='2' opacity='.55'/><line x1='95' y1='78' x2='80' y2='68' stroke='white' stroke-width='2' opacity='.55'/><line x1='60' y1='98' x2='60' y2='80' stroke='white' stroke-width='2' opacity='.55'/><line x1='25' y1='78' x2='40' y2='68' stroke='white' stroke-width='2' opacity='.55'/><line x1='25' y1='38' x2='40' y2='45' stroke='white' stroke-width='2' opacity='.55'/><circle cx='60' cy='57' r='10' fill='white' opacity='.95'/></svg>"/>
   <link rel="stylesheet" href="css/style.css"/>
   <style>
     .modal-overlay{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem;background:rgba(0,0,0,0.55);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity 0.22s ease;}
@@ -37,7 +37,7 @@
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-glow"></div>
       <div class="sidebar-logo">
-        <svg class="sidebar-logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="url(#sg)"/><defs><linearGradient id="sg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs><path d="M10 23L16 9l6 14M12.5 18.5h7" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg class="sidebar-logo-icon" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" rx="28" fill="url(#dsg)"/><defs><linearGradient id="dsg" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs><polygon points="60,18 95,38 95,78 60,98 25,78 25,38" stroke="white" stroke-width="4" fill="none" opacity=".95"/><polygon points="60,34 80,45 80,68 60,80 40,68 40,45" stroke="white" stroke-width="2.5" fill="white" opacity=".18"/><line x1="60" y1="18" x2="60" y2="34" stroke="white" stroke-width="2" opacity=".55"/><line x1="95" y1="38" x2="80" y2="45" stroke="white" stroke-width="2" opacity=".55"/><line x1="95" y1="78" x2="80" y2="68" stroke="white" stroke-width="2" opacity=".55"/><line x1="60" y1="98" x2="60" y2="80" stroke="white" stroke-width="2" opacity=".55"/><line x1="25" y1="78" x2="40" y2="68" stroke="white" stroke-width="2" opacity=".55"/><line x1="25" y1="38" x2="40" y2="45" stroke="white" stroke-width="2" opacity=".55"/><circle cx="60" cy="57" r="10" fill="white" opacity=".95"/></svg>
         <span>Arkeon</span>
       </div>
 
@@ -56,6 +56,10 @@
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
           Trash
           <span class="nav-badge" id="trashCount" style="display:none;">0</span>
+        </div>
+        <div class="nav-item" id="nav-storage" onclick="switchView('storage')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+          Storage
         </div>
 
         <div class="sidebar-section" id="adminSection" style="display:none;margin-top:0.25rem;">Admin</div>
@@ -157,6 +161,26 @@
 
         <div class="breadcrumb" id="breadcrumb"></div>
         <div id="fileList" class="file-list"></div>
+
+        <!-- Storage View -->
+        <div id="storageView" style="display:none;">
+          <div class="glass" style="border-radius:var(--radius);padding:1.75rem;margin-bottom:1.25rem;">
+            <div style="display:flex;align-items:flex-end;gap:0.5rem;margin-bottom:0.6rem;">
+              <span id="storageUsedBig" style="font-size:2rem;font-weight:900;letter-spacing:-1px;">0 B</span>
+              <span id="storageLimitBig" style="font-size:1rem;color:var(--text3);font-weight:600;margin-bottom:0.35rem;"></span>
+            </div>
+            <div style="height:6px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-bottom:0.75rem;">
+              <div id="storageFillBig" style="height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;width:0%;transition:width 0.6s ease;box-shadow:0 0 10px var(--accent);"></div>
+            </div>
+            <p id="storageSubtext" style="font-size:0.8rem;color:var(--text3);">Loading storage info...</p>
+          </div>
+
+          <div class="section-hdr" style="margin-bottom:0.75rem;">
+            <span class="section-title">Files by size</span>
+          </div>
+
+          <div id="storageBreakdownList" class="file-list"></div>
+        </div>
       </div>
     </main>
   </div>
@@ -427,11 +451,16 @@
 
     function switchView(view) {
       currentView = view;
-      ["drive","starred","trash"].forEach(v => document.getElementById(`nav-${v}`).classList.toggle("active", v === view));
+      ["drive","starred","trash","storage"].forEach(v => {
+        const el = document.getElementById(`nav-${v}`);
+        if (el) el.classList.toggle("active", v === view);
+      });
       document.getElementById("driveToolbar").style.display = view === "drive" ? "flex" : "none";
       document.getElementById("emptyTrashBtn").style.display = view === "trash" ? "flex" : "none";
       document.getElementById("breadcrumb").style.display = view === "drive" ? "flex" : "none";
-      const titles = {drive: `${user?.name||'My'}'s Drive`, starred: "Starred", trash: "Trash"};
+      document.getElementById("storageView").style.display = view === "storage" ? "block" : "none";
+      document.getElementById("fileList").style.display = view === "storage" ? "none" : "flex";
+      const titles = {drive: `${user?.name||'My'}'s Drive`, starred: "Starred", trash: "Trash", storage: "Storage"};
       document.getElementById("viewTitle").textContent = titles[view];
       refresh();
     }
@@ -440,6 +469,7 @@
       if (currentView === "drive") loadDrive();
       else if (currentView === "starred") loadStarred();
       else if (currentView === "trash") loadTrash();
+      else if (currentView === "storage") loadStorage();
       loadStats();
     }
 
@@ -882,6 +912,55 @@
       if (res?.ok) auth.logout();
       else { const d = await res.json(); showAlert(a, d.detail || "Failed."); btn.textContent = "Delete My Account"; btn.disabled = false; }
     });
+
+    async function loadStorage() {
+      const [statsRes, breakdownRes] = await Promise.all([
+        apiFetch("/api/file/stats"),
+        apiFetch("/api/file/storage-breakdown")
+      ]);
+      if (!statsRes || !breakdownRes) return;
+      const stats = await statsRes.json();
+      const files = await breakdownRes.json();
+
+      const used = stats.total_size || 0;
+      const limit = stats.storage_limit;
+
+      document.getElementById("storageUsedBig").textContent = formatSize(used);
+      if (limit) {
+        document.getElementById("storageLimitBig").textContent = `/ ${formatSize(limit)} used`;
+        const pct = Math.min(100, (used / limit) * 100);
+        document.getElementById("storageFillBig").style.width = pct + "%";
+        document.getElementById("storageSubtext").textContent = `${formatSize(limit - used)} remaining`;
+        if (pct > 90) document.getElementById("storageFillBig").style.background = "linear-gradient(90deg,#f59e0b,#ef4444)";
+      } else {
+        document.getElementById("storageLimitBig").textContent = "";
+        document.getElementById("storageFillBig").style.width = "15%";
+        document.getElementById("storageSubtext").textContent = `${stats.total_files} files · No storage limit set`;
+      }
+
+      const list = document.getElementById("storageBreakdownList");
+      if (!files.length) {
+        list.innerHTML = `<div class="empty"><div class="empty-icon">💾</div><h3>No files yet</h3><p>Upload files to see storage breakdown</p></div>`;
+        return;
+      }
+      list.innerHTML = files.map((f, i) => {
+        const pct = limit ? Math.min(100, (f.file_size / limit) * 100) : 0;
+        const barWidth = limit ? pct : (used > 0 ? Math.min(100, (f.file_size / used) * 80) : 5);
+        return `<div class="file-card" style="animation-delay:${i*0.03}s;flex-direction:column;gap:0.5rem;cursor:default;">
+          <div style="display:flex;align-items:center;gap:0.85rem;width:100%;">
+            <div class="file-thumb" style="width:34px;height:34px;">${fileEmoji(f.file_type)}</div>
+            <div class="file-info" style="flex:1;min-width:0;">
+              <div class="file-name">${f.file_name}</div>
+              <div class="file-meta-row"><span>${f.file_type||'Unknown'}</span><span>${formatDate(f.create_date)}</span></div>
+            </div>
+            <span style="font-size:0.85rem;font-weight:700;color:var(--accent);flex-shrink:0;">${formatSize(f.file_size)}</span>
+          </div>
+          <div style="height:2px;background:var(--surface2);border-radius:99px;overflow:hidden;">
+            <div style="height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;width:${barWidth.toFixed(1)}%;"></div>
+          </div>
+        </div>`;
+      }).join("");
+    }
 
     document.addEventListener("keydown", e => {
       if (e.key === "Escape") ["previewOverlay","fileActionOverlay","shareOverlay","folderOverlay","renameOverlay","settingsOverlay"].forEach(closeModal);
